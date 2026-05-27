@@ -88,21 +88,26 @@ while true; do
 	    	record_name=$(echo "$line" | cut -d "|" -f1 | xargs)
 		record_city=$(echo "$line" | cut -d "|"	 -f2 | xargs)
 		record_phone=$(echo "$line" | cut -d "|" -f3 | xargs)
+		
+		flag=false
 
-		if [ "$search_field" = "name" ] && [ "$record_name" = "$search_value" ] || \
-		   [ "$search_field" = "city" ] && [ "$record_city" = "$search_value" ] || \
-		   [ "$search_field" = "phone" ] && [ "$record_number" = "$search_value" ]]; then
-
+		if [ "$search_field" = "name" ] && [ "$record_name" = "$search_value" ]; then
+    		   flag=true
+		elif [ "$search_field" = "city" ] && [ "$record_city" = "$search_value" ]; then
+    	  	   flag=true
+		elif [ "$search_field" = "phone" ] && [ "$record_phone" = "$search_value" ]; then
+    		   flag=true
+		fi
+		
+		if [ "$flag" = true ]; then
 		   if [ "$update_field" = "name" ]; then
-			record_name="$update_value"
-		   elif [ "$update_field" =  "city" ]; then
-			[ record_city="$update_value"
-		   elif [ "$update_field" = "phone"]; then
-			record_phone="$update_value"
-		   fi
-		
-		echo "$record_name | $record_city | $record_phone" >> "$tmp_file"
-		
+  		      record_name="$update_value"
+		   elif [ "$update_field" = "city" ]; then
+   		      record_city="$update_value"
+		   elif [ "$update_field" = "phone" ]; then
+    		      record_phone="$update_value"
+		   fi	
+		   echo "$record_name | $record_city | $record_phone" >> "$tmp_file"
 		else
 		     echo "$line" >> "$tmp_file"
 		fi
@@ -113,7 +118,35 @@ while true; do
             ;;
 
         delete)
-            echo "delete option later"
+            delete_query="$2"
+	    
+	    delete_field="${delete_query%%=*}"
+            delete_value="${delete_query#*=}"
+	    
+	    tmp_file=$(mktemp)
+
+	    while IFS= read -r line; do
+		record_name=$(echo "$line" | cut -d "|" -f1 | xargs)
+		record_city=$(echo "$line" | cut -d "|" -f2 | xargs)
+		record_phone=$(echo "$line" | cut -d "|" -f3 | xargs)
+		
+		flag=false
+
+                if [ "$delete_field" = "name" ] && [ "$record_name" = "$delete_value" ]; then
+                   flag=true
+                elif [ "$delete_field" = "city" ] && [ "$record_city" = "$delete_value" ]; then
+                   flag=true
+                elif [ "$delete_field" = "phone" ] && [ "$record_phone" = "$delete_value" ]; then
+                   flag=true
+                fi
+		if [ "$flag" = true ]; then
+		   echo "record deleted: $line"
+		   continue
+		fi
+	    	echo "$line" >> "$tmp_file" 
+	    done < "$DATABASE_FILE"
+	    mv "$tmp_file" "$DATABASE_FILE"
+	    echo "delete completed"	
             ;;
 
         exit)
