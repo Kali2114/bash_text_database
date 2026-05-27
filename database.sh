@@ -73,7 +73,43 @@ while true; do
             ;;
 
         update)
-            echo "update option later"
+            search_query="$2"
+	    update_query="$3"
+
+	    search_field="${search_query%%=*}"
+	    search_value="${search_query#*=}"
+
+	    update_field="${update_query%%=*}"
+	    update_value="${update_query#*=}"
+
+	    tmp_file=$(mktemp)
+
+	    while IFS= read -r line; do
+	    	record_name=$(echo "$line" | cut -d "|" -f1 | xargs)
+		record_city=$(echo "$line" | cut -d "|"	 -f2 | xargs)
+		record_phone=$(echo "$line" | cut -d "|" -f3 | xargs)
+
+		if [ "$search_field" = "name" ] && [ "$record_name" = "$search_value" ] || \
+		   [ "$search_field" = "city" ] && [ "$record_city" = "$search_value" ] || \
+		   [ "$search_field" = "phone" ] && [ "$record_number" = "$search_value" ]]; then
+
+		   if [ "$update_field" = "name" ]; then
+			record_name="$update_value"
+		   elif [ "$update_field" =  "city" ]; then
+			[ record_city="$update_value"
+		   elif [ "$update_field" = "phone"]; then
+			record_phone="$update_value"
+		   fi
+		
+		echo "$record_name | $record_city | $record_phone" >> "$tmp_file"
+		
+		else
+		     echo "$line" >> "$tmp_file"
+		fi
+	   done < "$DATABASE_FILE"
+
+	   mv "$tmp_file" "$DATABASE_FILE"
+	   echo "record updated."
             ;;
 
         delete)
