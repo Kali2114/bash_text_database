@@ -1,14 +1,61 @@
-Simple text-based database implemented in Bash.
+# Bash Text Database
 
-Project created for Operating Systems course.
+Simple text-based database written in Bash.
 
-Features:
-- add records (name, city, phone)
-- search records by field (name, city, phone)
-- basic validation (empty fields, phone format, duplicates)
-- file-based storage
+## Features
 
-Technologies:
+- Add records
+- Search records by:
+  - name
+  - city
+  - phone number
+- Update records
+- Delete records
+- Input validation
+- Duplicate prevention
+- File-based storage
+
+## Technologies
+
 - Bash
 - grep
 - awk
+- cut
+
+## Example Usage
+
+### Add record
+
+```bash
+./database.sh add
+```
+
+### Search record
+
+```bash
+./database.sh search city=Warszawa
+```
+
+### Update record
+
+```bash
+./database.sh update name="Jan Kowalski" city=Krakow
+```
+
+### Delete record
+
+```bash
+./database.sh delete phone="22 111 22 33"
+```
+
+## Storage Format
+
+Records are stored in a text file:
+
+```text
+Name | City | Phone
+```
+
+## Project Purpose
+
+Project created for Operating Systems course and Bash scripting practice.
