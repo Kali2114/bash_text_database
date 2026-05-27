@@ -146,7 +146,7 @@ while true; do
 	    	echo "$line" >> "$tmp_file" 
 	    done < "$DATABASE_FILE"
 	    mv "$tmp_file" "$DATABASE_FILE"
-	    echo "delete completed"	
+	    echo "delete completed."	
             ;;
 
         exit)
@@ -155,7 +155,7 @@ while true; do
             ;;
 
         *)
-            echo "Unknown action."
+            echo "unknown action."
             ;;
     esac
 
